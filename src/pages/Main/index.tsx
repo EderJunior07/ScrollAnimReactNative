@@ -15,8 +15,9 @@ import {Extrapolate} from 'react-native-reanimated';
 import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Tracks from '../../components/Tracks';
+import onLogin from '../../services/AuthenticateHandler';
 LogBox.ignoreAllLogs;
-
+//https://medium.com/@thomasswolfs/react-native-the-full-authentication-flow-chapter-1-building-our-react-native-app-1e1d594a9830
 const Main = () => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
 
@@ -29,7 +30,7 @@ const Main = () => {
       />
 
       <TouchableOpacity
-        onPress={() => console.log('Voltar')}
+        onPress={() => onLogin()}
         style={{
           zIndex: 21,
           width: 50,
