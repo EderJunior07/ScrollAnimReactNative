@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -16,10 +16,23 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Tracks from '../../components/Tracks';
 import onLogin from '../../services/AuthenticateHandler';
+import {getHers} from '../../services/api';
+import AuthContext from '../../contexts/auth';
 LogBox.ignoreAllLogs;
+
 //https://medium.com/@thomasswolfs/react-native-the-full-authentication-flow-chapter-1-building-our-react-native-app-1e1d594a9830
+
 const Main = () => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [res, setRes] = useState();
+
+  const {signed, signIn, user} = useContext(AuthContext);
+
+  useEffect(() => {
+    getHers(user?.accessToken).then((res) => {
+      setRes(res.data);
+    });
+  }, []);
 
   return (
     <>
@@ -30,7 +43,7 @@ const Main = () => {
       />
 
       <TouchableOpacity
-        onPress={() => onLogin()}
+        onPress={() => signIn()}
         style={{
           zIndex: 21,
           width: 50,
@@ -154,6 +167,7 @@ const Main = () => {
               }}
               resizeMode="cover"
             />
+
             <View
               style={{
                 zIndex: 9999,
@@ -209,8 +223,15 @@ const Main = () => {
               },
             ]}>
             <Text style={styles.masterTitle}>Músicas</Text>
-            {[...Array(5)].map((_, i) => (
-              <Tracks key={i} />
+
+            {res?.items.map((i: any, num: number) => (
+              <Tracks
+                key={num}
+                item={i}
+                name={i.name}
+                index={num}
+                preview_url={i.preview_url}
+              />
             ))}
           </Animated.View>
         </Animated.ScrollView>
